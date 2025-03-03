@@ -5,8 +5,10 @@
  * 4.赋值的时候，找到这个对象和属性，找到依赖的effct 都更新，触发更新，
  */
 
+import { isObject } from "@vue/shared";
 import { activeEffect } from "./effect";
 import { track, trigger } from "./reactiveEffect";
+import { reactive } from "./reactive";
 
 export enum ReactiveFlags { 
     IS_REACTIVE = "__v_isReactive" // 基本上唯一
@@ -21,8 +23,11 @@ export const mutableHandlers: ProxyHandler<any> = {
         // 依赖收集 todo...
         track(target, key); // 收集这个对象上的这个属性和effect 关联在一起
         // console.log(activeEffect, key)
-
-        return Reflect.get(target, key, receiver); 
+        let res = Reflect.get(target, key, receiver); 
+        if (isObject(res)) { // 当取的值也是对象的时候，我需要对这个对象再进行代理 也就是递归代理，但不是对所有的属性值代理，而是用到了，并且还是对象才代理
+            return reactive(res)
+        }
+        return res; 
     },
     // set里触发所有的订阅者重新执行
     set(target, key, value, receiver) { 
