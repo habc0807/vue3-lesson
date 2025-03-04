@@ -93,7 +93,7 @@ export function proxyRefs(objectWithRefs: any) {
         set(target, key, value, receiver) {
             const oldValue = target[key];
             if (oldValue !== value) {
-                //  如果老值是ref 需要ref赋值
+                //  如果老值是ref 就 .value赋值， 不是ref,就直接赋值
                 if (oldValue.__v_isRef) { 
                     oldValue.value = value;
                     return true;
