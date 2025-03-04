@@ -137,7 +137,7 @@ export function trackEffect(effect: ReactiveEffect, dep: any) {
 export function trackEffects(dep: Map<ReactiveEffect, any>) {
     for (const effect of dep.keys()) {
 
-        // 处理computed的缓存： 当前的值不脏，但是触发更新需要将值变为脏值 Dirty 4 不脏是0，如果是不脏的，需要设置成脏的，因为依赖的属性变了
+        // 处理computed的缓存： 当前的值不脏，但是触发更新需要将值变为脏值 新值 Dirty 4 不脏是0，如果是不脏的，需要设置成脏的，因为依赖的属性变了 Dirty:4 
         if(effect._dirtyLevel < DirtyLevels.Dirty) {
             effect._dirtyLevel = DirtyLevels.Dirty;
         }
