@@ -59,4 +59,48 @@ function triggerRefValue(ref: RefImpl) {
         trackEffects(dep); // 触发依赖
     }
 }
- 
+
+
+// toRef toRefs reactive 对象变成响应式对象
+class ObjectRefImpl { 
+    public __v_isRef = true; // 增加ref标识
+    constructor(public _object: any, public _key: string) {}
+    get value() {
+        return this._object[this._key]
+    }
+    set value(newValue) {
+        this._object[this._key] = newValue;
+    }
+}
+export function toRef(object: any, key: string) {
+    return new ObjectRefImpl(object, key)
+}
+
+export function toRefs(object: any) {
+    const res: any = {};
+    for (const key in object) {
+        res[key] = toRef(object, key);
+    }
+    return res
+}
+    
+export function proxyRefs(objectWithRefs: any) {
+    return new Proxy(objectWithRefs, {
+        get(target, key, receiver) {
+            let r = Reflect.get(target, key, receiver);
+            return r.__v_isRef ? r.value : r; // 自动脱ref
+        },
+        set(target, key, value, receiver) {
+            const oldValue = target[key];
+            if (oldValue !== value) {
+                //  如果老值是ref 需要ref赋值
+                if (oldValue.__v_isRef) { 
+                    oldValue.value = value;
+                    return true;
+                } else {
+                    return Reflect.set(target, key, value, receiver);
+                }
+            }
+        }
+    })
+}
