@@ -91,9 +91,14 @@ export class ReactiveEffect {
         }
     }
 
-    // stop() {
-    //     this.active = false;
-    // }
+    // unwatch时需要用到
+    stop() {
+        if (this.active) {
+            this.active = false;
+            preCleanEffect(this) // 清空上次依赖收集
+            postCleanEffect(this) // 清空所有依赖收集
+        }
+    }
 }
 
 

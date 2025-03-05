@@ -82,6 +82,12 @@ function doWatch(source: any, cb: any, options: any) {
         // watchEffect 无cb
         effect.run(); // 立即执行effect 进行依赖收集
     }
+
+
+    const unwatch = () => {
+        effect.stop();
+    }
+    return unwatch;
 }
 
 
