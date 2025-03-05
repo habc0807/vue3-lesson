@@ -56,13 +56,23 @@ function doWatch(source: any, cb: any, options: any) {
         getter = source;
     }
 
+    let clean: any = undefined;
+    const onCleanup = (fn: Function) =>{
+        clean = () => {
+            fn();
+            clean = undefined
+        }
+    }
     
     let oldValue: any = undefined;
     const job = () => { 
         // watch 与 watchEffect 都会走到这里 做cb 区分处理
         if (cb) {
             const newValue = effect.run();
-            cb(newValue, oldValue)
+            if (clean) {
+                clean(); // 在执行回调前，先将上次的操作进行清理
+            }
+            cb(newValue, oldValue, onCleanup)
             oldValue = newValue;
         } else {
             effect.run();
