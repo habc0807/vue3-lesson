@@ -1,4 +1,4 @@
-import { isfunction } from "@vue/shared";
+import { isFunction } from "@vue/shared";
 import { ReactiveEffect} from "./effect"
 import { trackRefValue, triggerRefValue } from "./ref";
 
@@ -48,7 +48,7 @@ class ComputedRefImpl {
 
 
 export function computed(getterOrOptions: any): any { 
-    let onlyGetter = isfunction(getterOrOptions) //  如果是函数，则只传入getter，不传入setter 是只读的
+    let onlyGetter = isFunction(getterOrOptions) //  如果是函数，则只传入getter，不传入setter 是只读的
 
     let getter;
     let setter;

@@ -104,3 +104,7 @@ export function proxyRefs(objectWithRefs: any) {
         }
     })
 }
+
+export function isRef(value: any) {
+    return value && value.__v_isRef
+}
